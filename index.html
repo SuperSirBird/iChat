@@ -4,39 +4,40 @@
    <head>
       
       <script type = "text/javascript">
-      // https://www.tutorialspoint.com/html5/html5_websocket.htm
-      
-         function WebSocketTest() {
-            
-            if ("WebSocket" in window) {
-               alert("WebSocket is supported by your Browser!");
-               
-               // Let us open a web socket
-               var ws = new WebSocket("ws://localhost:9998/echo");
+	      const WebSocketServer = require("ws").Server;
+				const wss = new WebSocketServer({ port: 9998 });
+
+wss.on("connection", (ws) => {
+   console.info("websocket connection open");
+
+   if (ws.readyState === ws.OPEN) {
+       ws.send(JSON.stringify({
+           msg1: 'yo, im msg 1'
+       }))
+
+       setTimeout(() => {
+            ws.send(JSON.stringify({
+                msg2: 'yo, im a delayed msg 2'
+            }))
+       }, 1000)
+   }
+});
+	      
+     // Client
 				
-               ws.onopen = function() {
-                  
-                  // Web Socket is connected, send data using send()
-                  ws.send("Message to send");
-                  alert("Message is sent...");
-               };
-				
-               ws.onmessage = function (evt) { 
-                  var received_msg = evt.data;
-                  alert("Message is received...");
-               };
-				
-               ws.onclose = function() { 
-                  
-                  // websocket is closed.
-                  alert("Connection is closed..."); 
-               };
-            } else {
-              
-               // The browser doesn't support WebSocket
-               alert("WebSocket NOT supported by your Browser!");
-            }
-         }
+			const WebSocket = require('ws');
+
+let ws = new WebSocket('ws://localhost:2222');
+
+ws.onopen = function() {
+    console.log('open')
+}
+
+ws.onmessage = function(ev) {
+    let _data = JSON.parse(ev.data);
+
+    console.log(_data);
+}
       </script>
 		
    </head>
